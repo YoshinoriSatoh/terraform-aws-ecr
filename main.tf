@@ -25,24 +25,21 @@ resource "aws_ecr_lifecycle_policy" "repositories" {
     aws_ecr_repository.repositories
   ]
   repository = each.key
-
-  policy = <<EOF
-{
-  "rules": [
-    {
-      "rulePriority": 1,
-      "description": "Keep last ${var.life_cycle.count} images",
-      "selection": {
-        "tagStatus": "tagged",
-        "tagPrefixList": ["${var.life_cycle.prefix}"],
-        "countType": "imageCountMoreThan",
-        "countNumber": ${var.life_cycle.count}
-      },
-      "action": {
-        "type": "expire"
+  policy = jsonencode({
+    rules: [
+      {
+        rulePriority: 1,
+        description: "Keep last ${var.life_cycle.count} images",
+        selection: {
+          tagStatus: "tagged",
+          tagPrefixList: [var.life_cycle.prefix],
+          countType: "imageCountMoreThan",
+          countNumber: var.life_cycle.count
+        },
+        action: {
+          "type": "expire"
+        }
       }
-    }
-  ]
-}
-EOF
+    ]
+  })
 }

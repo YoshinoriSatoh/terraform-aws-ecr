@@ -15,6 +15,10 @@ variable "repositories" {
 variable "life_cycle" {
   type = object({
     prefix = string
-    count = string
+    count = number
   })
+  default = {
+    prefix = "gitsha"
+    count = 10
+  }
 }
